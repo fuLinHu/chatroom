@@ -8,6 +8,9 @@ spring:
     suffix: .html
     mode: HTML
     cache: false
+  mvc:
+    static-path-pattern: /**  #加载静态资源路径配置
 server:
   port: 9999
+
 
