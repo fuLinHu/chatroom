@@ -69,8 +69,8 @@ public class WebSocket {
      * */
      @OnError
      public void onError(Session session, Throwable error) {
-     System.out.println("发生错误");
-     error.printStackTrace();
+         System.out.println("发生错误");
+         error.printStackTrace();
      }
 
 
