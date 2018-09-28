@@ -1,6 +1,6 @@
 $(function(){
     var ipAddr=$("#ipAddr").val();
-    var ws = new WebSocket("ws://10.0.43.222:9999/websocket/"+ipAddr);
+    var ws = new WebSocket("ws://"+ipAddr+":9999/websocket/"+ipAddr);
     $(".send").on("click",function(){
         var message= $(".message").val();
         message=$.trim(message);

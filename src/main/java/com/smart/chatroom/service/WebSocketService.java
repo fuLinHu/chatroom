@@ -2,12 +2,15 @@ package com.smart.chatroom.service;
 
 import com.smart.chatroom.util.RequestUtil;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.nio.channels.NotYetConnectedException;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
@@ -64,6 +67,29 @@ public class WebSocketService {
             }
         }
     }
+    /**
+     * 处理二进制消息
+     */
+    @OnMessage
+    public void onMessage(byte[] message, Session session) {
+        System.out.println("收到二进制流:");
+        /*//将二进制流保存为文件, 文件名从连接对象中取出
+        saveFileFromBytes(message, "src/" + conn.getFileName());
+        //告诉前台可以继续发送了.
+        try {
+            conn.send("ok");
+        } catch (NotYetConnectedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+    }
+
 
     /**
      * 发生错误时调用
