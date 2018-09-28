@@ -1,21 +1,24 @@
 package com.smart.chatroom.service;
 
+import com.smart.chatroom.util.RequestUtil;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.websocket.*;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
-@ServerEndpoint(value = "/websocket")
+@ServerEndpoint(value = "/websocket/{ipAddr}")
 @Component
-public class WebSocket {
+public class WebSocketService {
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;
 
     //concurrent包的线程安全Set，用来存放每个客户端对应的WebSocket对象。
-    private static CopyOnWriteArraySet<WebSocket> webSocketSet = new CopyOnWriteArraySet<WebSocket>();
+    private static CopyOnWriteArraySet<WebSocketService> webSocketSet = new CopyOnWriteArraySet<WebSocketService>();
 
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
@@ -23,14 +26,14 @@ public class WebSocket {
     /**
      * 连接建立成功调用的方法*/
     @OnOpen
-    public void onOpen(Session session) {
+    public void onOpen(@PathParam("ipAddr") String ipAddr, Session session) {
         this.session = session;
         webSocketSet.add(this);     //加入set中
         addOnlineCount();           //在线数加1
         System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());
         try {
-            sendMessage("我是服务器的数据");
-        } catch (IOException e) {
+            sendMessage("allPeople__@@%%__"+getOnlineCount());
+        } catch (Exception e) {
             System.out.println("IO异常");
         }
     }
@@ -52,9 +55,8 @@ public class WebSocket {
     @OnMessage
     public void onMessage(String message, Session session) {
         System.out.println("来自客户端的消息:" + message);
-
         //群发消息
-        for (WebSocket item : webSocketSet) {
+        for (WebSocketService item : webSocketSet) {
             try {
                 item.sendMessage(message);
             } catch (IOException e) {
@@ -83,7 +85,7 @@ public class WebSocket {
       * 群发自定义消息
       * */
     public static void sendInfo(String message) throws IOException {
-        for (WebSocket item : webSocketSet) {
+        for (WebSocketService item : webSocketSet) {
             try {
                 item.sendMessage(message);
             } catch (IOException e) {
@@ -97,10 +99,10 @@ public class WebSocket {
     }
 
     public static synchronized void addOnlineCount() {
-        WebSocket.onlineCount++;
+        WebSocketService.onlineCount++;
     }
 
     public static synchronized void subOnlineCount() {
-        WebSocket.onlineCount--;
+        WebSocketService.onlineCount--;
     }
 }
